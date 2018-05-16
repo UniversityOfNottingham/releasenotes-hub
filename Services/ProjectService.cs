@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
@@ -26,11 +27,18 @@ namespace releasenotes.Services
             await _projects.ReplaceOneAsync(
                 Builders<Project>.Filter.Eq(x => x.Id, model.Id),
                 model,
-                new UpdateOptions {
+                new UpdateOptions
+                {
                     IsUpsert = true
                 }
             );
         }
+
+        public async Task<IEnumerable<Project>> List()
+            => await (await _projects.FindAsync(
+                    Builders<Project>.Filter.Exists(x => x.Id)
+                ))
+                .ToListAsync();
 
         public async Task<Project> Get(string id)
             => await _projects.Find(x => x.Id == id)

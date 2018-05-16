@@ -21,26 +21,13 @@ namespace releasenotes.Controllers
         #region Projects
 
         [HttpGet]
-        public IEnumerable<object> Get()
-        {
-            return new[] {
-                new {
-                    Name = "Hello"
-                },
-                new {
-                    Name = "Jon"
-                }
-            };
-        }
+        public async Task<IEnumerable<Project>> Get()
+            => await _projects.List();
 
         [HttpGet("{id}")]
         public async Task<Project> Get(string id)
-        {
-            return await _projects.Get(id);
-        }
+            => await _projects.Get(id);
 
-
-        // also PUT at slug
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(string id, [FromBody] Project model)
         {
