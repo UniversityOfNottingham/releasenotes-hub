@@ -34,12 +34,9 @@ namespace releasenotes.Controllers
         }
 
         [HttpGet("{id}")]
-        public object Get(string id)
+        public async Task<Project> Get(string id)
         {
-            return new
-            {
-                Name = "Hello"
-            };
+            return await _projects.Get(id);
         }
 
 
