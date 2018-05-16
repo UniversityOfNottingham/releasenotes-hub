@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using releasenotes.Models;
 
@@ -43,5 +44,20 @@ namespace releasenotes.Services
         public async Task<Project> Get(string id)
             => await _projects.Find(x => x.Id == id)
                 .FirstOrDefaultAsync();
+
+        public async Task PutRelease(string id, Release model)
+        {
+            await _projects.UpdateOneAsync(
+                Builders<Project>.Filter.Eq(x => x.Id, id),
+                Builders<Project>.Update.Set("Releases.$[r]", model),
+                new UpdateOptions
+                {
+                    IsUpsert = true,
+                    ArrayFilters = new List<ArrayFilterDefinition> {
+                        new BsonDocumentArrayFilterDefinition<Project>(
+                            new BsonDocument("r.Id", model.Id))
+                    }
+                });
+        }
     }
 }

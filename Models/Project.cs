@@ -10,6 +10,6 @@ namespace releasenotes.Models
         
         public string Name { get; set; }
 
-        public IList<Release> Releases { get; set; }
+        public IList<Release> Releases { get; set; } = new List<Release>();
     }
 }

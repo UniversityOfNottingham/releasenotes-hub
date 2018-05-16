@@ -37,16 +37,29 @@ namespace releasenotes.Controllers
             return CreatedAtAction("Get", new { id });
         }
 
-        [HttpPost] // POST auto generates slug, may return conflict
-        public void Post([FromBody]string value)
-        {
-            // TODO generate slug if none provided
-        }
+        // [HttpPost] // POST auto generates slug, may return conflict
+        // public void Post([FromBody]string value)
+        // {
+        //     // TODO generate slug if none provided
+        // }
 
         // [HttpDelete("{id}")]
         // public void Delete(int id)
         // {
         // }
+
+        #endregion
+
+        #region Releases
+
+        [HttpPut("{id}/{release}")]
+        public async Task<IActionResult> Put(string id, string release, [FromBody] Release model)
+        {
+            model.Id = release;
+            await _projects.PutRelease(id, model);
+
+            return CreatedAtAction("Get", new { id, release });
+        }
 
         #endregion
     }
