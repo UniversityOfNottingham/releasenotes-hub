@@ -26,7 +26,7 @@ namespace releasenotes
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(svc => new MongoClient(
-                Configuration.GetConnectionString("mongo")));
+                Configuration.GetConnectionString("ReleaseNotesHub")));
 
             services.AddMvc();
 

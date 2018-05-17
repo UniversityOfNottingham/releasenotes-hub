@@ -8,7 +8,7 @@ It's a .NET Core app, using API Controllers for the backend, with a React fronte
 
 MongoDB is used for persistence. Mongo 3.6+ is required since we use ArrayFilters.
 
-The app gets its mongo connection string from the config path `ConnectionStrings:mongo`. You'll want to set this as an **environment variable** either in `Dockerfile` / `docker-compose`, `Procfile`, some other infrastructure config, or simply directly on the host machine. The `DatabaseName` is configurable and as this is unlikely to be sensitive, can be changed in `appsettings.json`.
+The app gets its mongo connection string from the config path `ConnectionStrings:ReleaseNotesHub`. You'll want to set this as an **environment variable** either in `Dockerfile` / `docker-compose`, `Procfile`, some other infrastructure config, or simply directly on the host machine. The `DatabaseName` is configurable and as this is unlikely to be sensitive, can be changed in `appsettings.json`.
 
 # TODO
 
