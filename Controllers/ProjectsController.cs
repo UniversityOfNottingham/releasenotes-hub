@@ -44,10 +44,9 @@ namespace releasenotes.Controllers
         //     // TODO generate slug if none provided
         // }
 
-        // TODO [HttpDelete("{id}")]
-        // public void Delete(int id)
-        // {
-        // }
+        [HttpDelete("{id}")]
+        public async Task Delete(string id)
+            => await _projects.Delete(id);
 
         #endregion
 

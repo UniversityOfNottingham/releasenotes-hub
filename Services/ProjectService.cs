@@ -72,6 +72,9 @@ namespace releasenotes.Services
                 })
                 .FirstOrDefaultAsync();
 
+        public async Task Delete(string id)
+            => await _projects.DeleteOneAsync(x => x.Id == id);
+
         public async Task PutRelease(string id, Release model)
         {
             var p = await _projects.Find(x => x.Id == id).FirstOrDefaultAsync();
