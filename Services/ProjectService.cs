@@ -25,7 +25,6 @@ namespace releasenotes.Services
 
         public async Task Put(Project model)
         {
-            // TODO non-exception error handling?
             await _projects.ReplaceOneAsync(
                 Builders<Project>.Filter.Eq(x => x.Id, model.Id),
                 model,
@@ -40,7 +39,8 @@ namespace releasenotes.Services
             => await (_projects
                 .Find(FilterDefinition<Project>.Empty)
                 .SortByDescending(x => x.Name)
-                .Project(x => new ProjectSummary{
+                .Project(x => new ProjectSummary
+                {
                     Name = x.Name,
                     Id = x.Id,
                     ReleaseCount = x.Releases.Count,
@@ -54,17 +54,32 @@ namespace releasenotes.Services
 
         public async Task PutRelease(string id, Release model)
         {
-            await _projects.UpdateOneAsync(
-                Builders<Project>.Filter.Eq(x => x.Id, id),
-                Builders<Project>.Update.Set("Releases.$[r]", model),
-                new UpdateOptions
-                {
-                    IsUpsert = true,
-                    ArrayFilters = new List<ArrayFilterDefinition> {
-                        new BsonDocumentArrayFilterDefinition<Project>(
-                            new BsonDocument("r.Id", model.Id))
-                    }
-                });
+            var p = await _projects.Find(x => x.Id == id).FirstOrDefaultAsync();
+
+            if (p == null) throw new KeyNotFoundException($"No project with id: {id}");
+
+            var r = p.Releases.FirstOrDefault(x => x.Id == model.Id);
+
+            if (r == null) // Create
+            {
+                await _projects.UpdateOneAsync(
+                    Builders<Project>.Filter.Eq(x => x.Id, id),
+                    Builders<Project>.Update.Push(x => x.Releases, model));
+            }
+            else // Update
+            {
+                await _projects.UpdateOneAsync(
+                    Builders<Project>.Filter
+                        .Where(x => x.Id == id && x.Releases.Any(y => y.Id == model.Id)),
+                    Builders<Project>.Update.Set(x => x.Releases[-1], model));
+            }
         }
+
+
+        public async Task<Release> GetRelease(string id, string release)
+            => (await _projects.Find(x => x.Id == id)
+                .FirstOrDefaultAsync())?
+                .Releases
+                .FirstOrDefault(x => x.Id == release);
     }
 }

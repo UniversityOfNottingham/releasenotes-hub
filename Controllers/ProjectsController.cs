@@ -58,8 +58,12 @@ namespace releasenotes.Controllers
             model.Id = release;
             await _projects.PutRelease(id, model);
 
-            return CreatedAtAction("Get", new { id, release });
+            return CreatedAtAction("GetRelease", new { id, release });
         }
+
+        [HttpGet("{id}/{release}")]
+        public async Task<Release> GetRelease(string id, string release)
+            => await _projects.GetRelease(id, release);
 
         #endregion
     }
