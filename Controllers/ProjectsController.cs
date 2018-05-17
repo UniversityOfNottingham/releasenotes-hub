@@ -45,8 +45,11 @@ namespace releasenotes.Controllers
         // }
 
         [HttpDelete("{id}")]
-        public async Task Delete(string id)
-            => await _projects.Delete(id);
+        public async Task<IActionResult> Delete(string id)
+        {
+            await _projects.Delete(id);
+            return NoContent();
+        }
 
         #endregion
 
@@ -65,7 +68,12 @@ namespace releasenotes.Controllers
         public async Task<Release> GetRelease(string id, string release)
             => await _projects.GetRelease(id, release);
 
-        // TODO Delete
+        [HttpDelete("{id}/{release}")]
+        public async Task<IActionResult> DeleteRelease(string id, string release)
+        {
+            await _projects.DeleteRelease(id, release);
+            return NoContent();
+        }
 
         // TODO download notes as file? or let the frontend app do that?
         // would be easy in .NET

@@ -98,11 +98,15 @@ namespace releasenotes.Services
             }
         }
 
-
         public async Task<Release> GetRelease(string id, string release)
             => (await _projects.Find(x => x.Id == id)
                 .FirstOrDefaultAsync())?
                 .Releases
                 .FirstOrDefault(x => x.Id == release);
+
+        public async Task DeleteRelease(string id, string release)
+            => await _projects.UpdateOneAsync(
+                Builders<Project>.Filter.Where(x => x.Id == id && x.Releases.Any(y => y.Id == release)),
+                Builders<Project>.Update.Unset(x => x.Releases[-1]));
     }
 }
