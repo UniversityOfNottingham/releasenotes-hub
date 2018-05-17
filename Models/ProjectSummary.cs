@@ -3,12 +3,14 @@ using System.Collections.Generic;
 
 namespace releasenotes.Models
 {
-    public class Project
+    public class ProjectSummary
     {
         public string Id { get; set; }
-        
+
         public string Name { get; set; }
 
-        public IList<Release> Releases { get; set; } = new List<Release>();
+        public int ReleaseCount { get; set; }
+
+        public Release LatestRelease { get; set; }
     }
 }

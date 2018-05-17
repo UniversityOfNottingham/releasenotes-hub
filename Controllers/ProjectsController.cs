@@ -21,7 +21,7 @@ namespace releasenotes.Controllers
         #region Projects
 
         [HttpGet]
-        public async Task<IEnumerable<Project>> Get()
+        public async Task<IEnumerable<ProjectSummary>> List()
             => await _projects.List();
 
         [HttpGet("{id}")]
@@ -53,7 +53,7 @@ namespace releasenotes.Controllers
         #region Releases
 
         [HttpPut("{id}/{release}")]
-        public async Task<IActionResult> Put(string id, string release, [FromBody] Release model)
+        public async Task<IActionResult> PutRelease(string id, string release, [FromBody] Release model)
         {
             model.Id = release;
             await _projects.PutRelease(id, model);

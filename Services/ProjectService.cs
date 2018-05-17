@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Bson;
@@ -35,10 +36,16 @@ namespace releasenotes.Services
             );
         }
 
-        public async Task<IEnumerable<Project>> List()
-            => await (await _projects.FindAsync(
-                    Builders<Project>.Filter.Exists(x => x.Id)
-                ))
+        public async Task<IEnumerable<ProjectSummary>> List()
+            => await (_projects
+                .Find(FilterDefinition<Project>.Empty)
+                .SortByDescending(x => x.Name)
+                .Project(x => new ProjectSummary{
+                    Name = x.Name,
+                    Id = x.Id,
+                    ReleaseCount = x.Releases.Count,
+                    LatestRelease = x.Releases.OrderByDescending(y => y.Date).FirstOrDefault()
+                }))
                 .ToListAsync();
 
         public async Task<Project> Get(string id)
