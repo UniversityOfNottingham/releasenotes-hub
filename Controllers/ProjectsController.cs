@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using releasenotes.Dtos;
 using releasenotes.Models;
 using releasenotes.Services;
+using Slugify;
 
 namespace releasenotes.Controllers
 {
@@ -26,23 +27,36 @@ namespace releasenotes.Controllers
             => await _projects.List();
 
         [HttpGet("{id}")]
-        public async Task<ProjectDetails> Get(string id)
+        public async Task<Models.Project> Get(string id)
             => await _projects.Get(id);
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(string id, [FromBody] Project model)
+        public async Task<IActionResult> Put(string id, [FromBody] Dtos.Project dto)
         {
-            model.Id = id;
-            await _projects.Put(model);
+            if(!ModelState.IsValid) return BadRequest(ModelState);
+
+            await _projects.Put(id, dto);
 
             return CreatedAtAction("Get", new { id });
         }
 
-        // TODO [HttpPost] // POST auto generates slug, may return conflict
-        // public void Post([FromBody]string value)
-        // {
-        //     // TODO generate slug if none provided
-        // }
+        [HttpPost] // POST auto generates slug, may return conflict
+        public async Task<IActionResult> Post([FromBody] Dtos.Project dto)
+        {
+            if(!ModelState.IsValid) return BadRequest(ModelState);
+            
+            var id = new SlugHelper().GenerateSlug(dto.Name);
+
+            // check if id exists
+            if(await _projects.Get(id) != null) return StatusCode(409,
+                $"A Project with id: {id} already exists. " +
+                "Specify an explicit id to create a new Project, " +
+                "or PUT a payload at the id to update the existing Project");
+
+            await _projects.Put(id, dto);
+
+            return CreatedAtAction("Get", new { id });
+        }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
@@ -56,16 +70,15 @@ namespace releasenotes.Controllers
         #region Releases
 
         [HttpPut("{id}/{release}")]
-        public async Task<IActionResult> PutRelease(string id, string release, [FromBody] Release model)
+        public async Task<IActionResult> PutRelease(string id, string release, [FromBody] Release dto)
         {
-            model.Id = release;
-            await _projects.PutRelease(id, model);
+            await _projects.PutRelease(id, release, dto);
 
             return CreatedAtAction("GetRelease", new { id, release });
         }
 
         [HttpGet("{id}/{release}")]
-        public async Task<Release> GetRelease(string id, string release)
+        public async Task<Entities.Release> GetRelease(string id, string release)
             => await _projects.GetRelease(id, release);
 
         [HttpDelete("{id}/{release}")]

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace releasenotes.Dtos
+namespace releasenotes.Models
 {
     public class ProjectSummary
     {

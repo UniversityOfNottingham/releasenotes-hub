@@ -1,6 +1,6 @@
 using System;
 
-namespace releasenotes.Dtos
+namespace releasenotes.Models
 {
     public class ReleaseSummary
     {

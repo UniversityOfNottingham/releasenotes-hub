@@ -1,13 +1,13 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
-namespace releasenotes.Models
+namespace releasenotes.Dtos
 {
     public class Release
     {
-        public string Id { get; set; }
-
         public DateTimeOffset Date { get; set; } = DateTimeOffset.UtcNow;
         
+        [Required]
         public string Notes { get; set; }
     }
 }
