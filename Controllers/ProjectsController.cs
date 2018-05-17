@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using releasenotes.Dtos;
 using releasenotes.Models;
 using releasenotes.Services;
 
@@ -25,7 +26,7 @@ namespace releasenotes.Controllers
             => await _projects.List();
 
         [HttpGet("{id}")]
-        public async Task<Project> Get(string id)
+        public async Task<ProjectDetails> Get(string id)
             => await _projects.Get(id);
 
         [HttpPut("{id}")]

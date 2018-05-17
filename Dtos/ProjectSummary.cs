@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace releasenotes.Models
+namespace releasenotes.Dtos
 {
     public class ProjectSummary
     {
@@ -11,6 +11,8 @@ namespace releasenotes.Models
 
         public int ReleaseCount { get; set; }
 
-        public Release LatestRelease { get; set; }
+        public ReleaseSummary LatestRelease { get; set; }
+
+        public string href => $"{BasePaths.ApiRoot}{BasePaths.Projects}/{Id}";
     }
 }

@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using MongoDB.Bson;
 using MongoDB.Driver;
+using releasenotes.Dtos;
 using releasenotes.Models;
 
 namespace releasenotes.Services
@@ -44,12 +44,32 @@ namespace releasenotes.Services
                     Name = x.Name,
                     Id = x.Id,
                     ReleaseCount = x.Releases.Count,
-                    LatestRelease = x.Releases.OrderByDescending(y => y.Date).FirstOrDefault()
+                    LatestRelease = x.Releases
+                        .OrderByDescending(y => y.Date)
+                        .Select(y => new ReleaseSummary
+                        {
+                            Id = y.Id,
+                            Date = y.Date,
+                            href = ReleaseSummary.GenerateHref(x.Id, y.Id)
+                        })
+                        .FirstOrDefault()
                 }))
                 .ToListAsync();
 
-        public async Task<Project> Get(string id)
+        public async Task<ProjectDetails> Get(string id)
             => await _projects.Find(x => x.Id == id)
+                .Project(x => new ProjectDetails
+                {
+                    Name = x.Name,
+                    Id = x.Id,
+                    Releases = x.Releases.Select(y => new ReleaseSummary
+                    {
+                        Id = y.Id,
+                        Date = y.Date,
+                        href = ReleaseSummary.GenerateHref(x.Id, y.Id)
+                    })
+                    .ToList()
+                })
                 .FirstOrDefaultAsync();
 
         public async Task PutRelease(string id, Release model)
