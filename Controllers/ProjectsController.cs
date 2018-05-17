@@ -40,7 +40,7 @@ namespace releasenotes.Controllers
             return CreatedAtAction("Get", new { id });
         }
 
-        [HttpPost] // POST auto generates slug, may return conflict
+        [HttpPost]
         public async Task<IActionResult> Post([FromBody] Dtos.Project dto)
         {
             if(!ModelState.IsValid) return BadRequest(ModelState);
@@ -55,7 +55,7 @@ namespace releasenotes.Controllers
 
             await _projects.Put(id, dto);
 
-            return CreatedAtAction("Get", new { id });
+            return Created(Url.Action("Get", new { id }), new { id });
         }
 
         [HttpDelete("{id}")]

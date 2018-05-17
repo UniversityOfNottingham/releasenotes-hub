@@ -40,7 +40,7 @@ namespace releasenotes.Services
         public async Task<IEnumerable<ProjectSummary>> List()
             => await (_projects
                 .Find(FilterDefinition<Entities.Project>.Empty)
-                .SortByDescending(x => x.Name)
+                .SortBy(x => x.Name)
                 .Project(x => new ProjectSummary
                 {
                     Name = x.Name,
