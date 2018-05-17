@@ -38,13 +38,13 @@ namespace releasenotes.Controllers
             return CreatedAtAction("Get", new { id });
         }
 
-        // [HttpPost] // POST auto generates slug, may return conflict
+        // TODO [HttpPost] // POST auto generates slug, may return conflict
         // public void Post([FromBody]string value)
         // {
         //     // TODO generate slug if none provided
         // }
 
-        // [HttpDelete("{id}")]
+        // TODO [HttpDelete("{id}")]
         // public void Delete(int id)
         // {
         // }
@@ -65,6 +65,11 @@ namespace releasenotes.Controllers
         [HttpGet("{id}/{release}")]
         public async Task<Release> GetRelease(string id, string release)
             => await _projects.GetRelease(id, release);
+
+        // TODO Delete
+
+        // TODO download notes as file? or let the frontend app do that?
+        // would be easy in .NET
 
         #endregion
     }
